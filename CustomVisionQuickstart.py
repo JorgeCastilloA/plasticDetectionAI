@@ -1,56 +1,43 @@
-from azure.cognitiveservices.vision.customvision.training import CustomVisionTrainingClient
+from turtle import width
+from unittest import result
 from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
-from azure.cognitiveservices.vision.customvision.training.models import ImageFileCreateBatch, ImageFileCreateEntry, Region
-from charset_normalizer import detect
 from msrest.authentication import ApiKeyCredentials
-import os
-import time
-import uuid
-
-# <snippet_creds>
-# Replace with valid values
-ENDPOINT = 'INSERT YOUR ENDPOINT'
-training_key = 'INSERT YOUR KEY'
-prediction_key = 'INSERT YOUR KEY'
-prediction_resource_id = 'INSERT YOUR RESOURCE ID'
+# install pip install Pillow in cmd
+from matplotlib.image import imread
+from matplotlib.patches import Rectangle
+from matplotlib import pyplot as plt
 
 
-# <snippet_auth>
-credentials = ApiKeyCredentials(in_headers={"Training-key": training_key})
-trainer = CustomVisionTrainingClient(ENDPOINT, credentials)
+prediction_key = '8042c8d7a4884dfa99765088d1f7f075'
+ENDPOINT = 'https://southcentralus.api.cognitive.microsoft.com/'
+project_id = 'b84345e6-5e7f-440e-b330-14e2ddcd59af'
+publish_iteration_name = 'Iteration2'
+
 prediction_credentials = ApiKeyCredentials(
     in_headers={"Prediction-key": prediction_key})
 predictor = CustomVisionPredictionClient(ENDPOINT, prediction_credentials)
-# </snippet_auth>
 
-# <snippet_create>
-publish_iteration_name = "detectModel"
-
-
-# Find the object detection domain
-obj_detection_domain = next(domain for domain in trainer.get_domains(
-) if domain.type == "ObjectDetection" and domain.name == "General")
-
-
-# Use uuid to avoid project name collisions.
-project = trainer.create_project(
-    str(uuid.uuid4()), domain_id=obj_detection_domain.id)
-
-
-# <snippet_upload>
-base_image_location = os.path.join(os.path.dirname(__file__), "Images")
-
-
-# Now there is a trained endpoint that can be used to make a prediction
-
-# Open the sample image and get back the prediction results.
-
-with open(os.path.join(base_image_location, "test", "test_image.jpg"), mode="rb") as test_data:
+# Search Image Locally
+with open('INSERT YOUR LOCAL DIR WITH IMAGE NAME', mode="rb") as test_data:
     results = predictor.detect_image(
-        project.id, publish_iteration_name, test_data)
+        project_id, publish_iteration_name, test_data)
 
+img = imread(
+    'INSERT YOUR LOCAL DIR WITH IMAGE NAME')
+_, ax = plt.subplots()
+ax.imshow(img)
+img_height, img_width, _ = img.shape
 
-# Display the results.
+# Print Results
 for prediction in results.predictions:
     print("\t" + prediction.tag_name + ": {0:.2f}% bbox.left = {1:.2f}, bbox.top = {2:.2f}, bbox.width = {3:.2f}, bbox.height = {4:.2f}".format(
         prediction.probability * 100, prediction.bounding_box.left, prediction.bounding_box.top, prediction.bounding_box.width, prediction.bounding_box.height))
+    if prediction.probability*100 > 35.0:
+        rect = Rectangle((prediction.bounding_box.left * img_width,
+                          prediction.bounding_box.top * img_height),
+                         prediction.bounding_box.width * img_width,
+                         prediction.bounding_box.height * img_height,
+                         edgecolor='r', facecolor='none')
+        ax.add_patch(rect)
+
+plt.show()
