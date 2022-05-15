@@ -1,8 +1,9 @@
-from turtle import width
-from unittest import result
+# pip install --upgrade azure-cognitiveservices-vision-computervision in cmd (as Admin) or Powershell
 from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
 from msrest.authentication import ApiKeyCredentials
-# install pip install Pillow in cmd
+from turtle import width
+from unittest import result
+# install pip install Pillow in cmd (as Admin) or Powershell
 from matplotlib.image import imread
 from matplotlib.patches import Rectangle
 from matplotlib import pyplot as plt
