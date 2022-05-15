@@ -18,13 +18,16 @@ prediction_credentials = ApiKeyCredentials(
     in_headers={"Prediction-key": prediction_key})
 predictor = CustomVisionPredictionClient(ENDPOINT, prediction_credentials)
 
+# Image directory
+img_dir = 'INSERT YOUR LOCAL DIR WITH IMAGE NAME'
+
 # Search Image Locally
-with open('INSERT YOUR LOCAL DIR WITH IMAGE NAME', mode="rb") as test_data:
+with open(img_dir, mode="rb") as test_data:
     results = predictor.detect_image(
         project_id, publish_iteration_name, test_data)
 
 img = imread(
-    'INSERT YOUR LOCAL DIR WITH IMAGE NAME')
+    img_dir)
 _, ax = plt.subplots()
 ax.imshow(img)
 img_height, img_width, _ = img.shape
