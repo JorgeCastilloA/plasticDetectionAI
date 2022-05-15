@@ -1,14 +1,13 @@
 from turtle import width
 from unittest import result
-from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
-from msrest.authentication import ApiKeyCredentials
-# install pip install Pillow in cmd
+# install pip install Pillow in cmd (as Admin) or Powershell
 from matplotlib.image import imread
 from matplotlib.patches import Rectangle
 from matplotlib import pyplot as plt
 
 class CustomVisionPredictionClient:
 
+  
     def __init__(self, image_path):
         prediction_key = '8042c8d7a4884dfa99765088d1f7f075'
         ENDPOINT = 'https://southcentralus.api.cognitive.microsoft.com/'
